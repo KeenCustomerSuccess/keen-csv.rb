@@ -14,6 +14,28 @@ class Keen::CSV
   end
 
   # ---------------------------------------------------------------------------
+  # csvString
+  # Generates and returns a CSV for this Keen response
+  # ---------------------------------------------------------------------------
+  def csvString
+    resultColumns = self.generateResultColumns
+    headers = resultColumns[:columns].keys
+    # Start off instantiating the csv string with the header values
+    csvString = headers.map{|s| self.filterValue(s)}.join(@options[:delimiter])
+
+    # Now iterate over each row, sticking its value under each header
+    (0..resultColumns[:maxRowIndex]).each do |rowIndex|
+      csvString << "\r\n"
+      csvString << headers.map{ |header|
+        self.filterValue(resultColumns[:columns][header][rowIndex])
+      }.join(@options[:delimiter])
+    end
+    return csvString
+  end
+
+protected
+
+  # ---------------------------------------------------------------------------
   # generateResultColumns
   # Transforms the Keen result columnar Map, keyed by header
   # ---------------------------------------------------------------------------
@@ -82,26 +104,6 @@ class Keen::CSV
     return @options[:filteredColumns] &&
            @options[:filteredColumns].is_a?(Array) &&
            @options[:filteredColumns].include?(header)
-  end
-
-  # ---------------------------------------------------------------------------
-  # csvString
-  # Generates and returns a CSV for this Keen response
-  # ---------------------------------------------------------------------------
-  def csvString
-    resultColumns = self.generateResultColumns
-    headers = resultColumns[:columns].keys
-    # Start off instantiating the csv string with the header values
-    csvString = headers.map{|s| self.filterValue(s)}.join(@options[:delimiter])
-
-    # Now iterate over each row, sticking its value under each header
-    (0..resultColumns[:maxRowIndex]).each do |rowIndex|
-      csvString << "\r\n"
-      csvString << headers.map{ |header|
-        self.filterValue(resultColumns[:columns][header][rowIndex])
-      }.join(@options[:delimiter])
-    end
-    return csvString
   end
 
   # ---------------------------------------------------------------------------

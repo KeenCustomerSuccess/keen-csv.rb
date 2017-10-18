@@ -23,11 +23,15 @@ class Keen::CSV
       maxRowIndex: 0 # We're going to count the rows, for future use
     }
 
+    # Using a lambda to add the right columns into resultColumns, and keep track
+    # of maxRowIndex
     setColumnValue = lambda do |column, rowIndex, value|
       unless self.columnIsFiltered?(column)
         resultColumns[:columns][column] ||= []
         resultColumns[:columns][column][rowIndex] = value
       end
+
+      # Gotta keep track of how many rows we're working with.
       resultColumns[:maxRowIndex] = rowIndex if rowIndex > resultColumns[:maxRowIndex]
     end
 
@@ -41,8 +45,10 @@ class Keen::CSV
     rowIndex = 0
     @rawResponse.each do |object|
       if object["value"].is_a? Array
+        # This result is grouped! We're gonna have to create alot more columns and rows
         object["value"].each do |group|
 
+          # iterate over each value grouping, and store the values
           self.flatten(group).each do |column, value|
             setColumnValue.call(column, rowIndex, value)
           end
@@ -55,7 +61,7 @@ class Keen::CSV
 
         end
       else
-
+        # Not grouped: This either an Extraction or a math operation on an interval.
         self.flatten(object).each do |column, value|
           setColumnValue.call(column, rowIndex, value)
         end
@@ -85,8 +91,10 @@ class Keen::CSV
   def csvString
     resultColumns = self.generateResultColumns
     headers = resultColumns[:columns].keys
+    # Start off instantiating the csv string with the header values
     csvString = headers.map{|s| self.filterValue(s)}.join(@options[:delimiter])
 
+    # Now iterate over each row, sticking its value under each header
     (0..resultColumns[:maxRowIndex]).each do |rowIndex|
       csvString << "\r\n"
       csvString << headers.map{ |header|
@@ -115,6 +123,7 @@ class Keen::CSV
   def flatten(object, flattened = {}, prefix = "")
     object.each do |key, value|
       if value.is_a?(Hash) || value.is_a?(Array)
+        # recurse!
         flatten(value, flattened, prefix + key + @options[:nestedDelimiter])
       else
         flattened[prefix + key] = value

@@ -1,6 +1,6 @@
 # keen-csv.rb
 
-Adds an option to the [official Keen gem](https://github.com/keenlabs/keen-gem) for converting hte Keen response into a multiline CSV string.
+Adds an option to the [official Keen gem](https://github.com/keenlabs/keen-gem) for converting the Keen response into a multiline CSV string.
 
 ### Installation
 

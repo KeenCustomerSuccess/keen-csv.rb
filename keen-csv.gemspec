@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name        = 'keen-csv'
-  s.version     = '0.0.1'
+  s.version     = '1.0.0'
   s.date        = '2017-10-17'
   s.summary     = "CSV output for Keen IO"
   s.description = "Builds a CSV string from a Keen IO response"

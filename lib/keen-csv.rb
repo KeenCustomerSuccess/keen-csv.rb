@@ -123,13 +123,25 @@ protected
   # Converts any nested dictionaries into a flattened/delimited one.
   # ---------------------------------------------------------------------------
   def flatten(object, flattened = {}, prefix = "")
-    object.each do |key, value|
+    handleValue = lambda do |value, newPrefix|
       if value.is_a?(Hash) || value.is_a?(Array)
         # recurse!
-        flatten(value, flattened, prefix + key + @options[:nestedDelimiter])
+        flatten(value, flattened, newPrefix + @options[:nestedDelimiter])
       else
-        flattened[prefix + key] = value
+        flattened[newPrefix] = value
       end
+    end
+
+    if object.is_a? Hash
+      object.each do |key, value|
+        handleValue.call(value, prefix + key)
+      end
+    elsif object.is_a? Array
+      object.each_with_index do |value, index|
+        handleValue.call(value, prefix + index.to_s)
+      end
+    else
+      return object
     end
 
     return flattened

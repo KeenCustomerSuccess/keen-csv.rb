@@ -18,7 +18,7 @@ or add it directly to your Gemfile:
 
 ### Usage
 
-Perform a Keen query as documented in the [official Keen gem](https://github.com/keenlabs/keen-gem), but include an additional `:csv` property in the query hash. The value can either be `true` or an _options_ hash"
+Perform a Keen query as documented in the [official Keen gem](https://github.com/keenlabs/keen-gem), but include an additional `:csv` property in the query hash. The value can either be `true` or an _options_ hash
 
 ```ruby
   require('keen')

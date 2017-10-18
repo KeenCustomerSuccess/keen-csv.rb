@@ -15,6 +15,7 @@ class Keen::CSV
 
   # ---------------------------------------------------------------------------
   # generateResultColumns
+  # Transforms the Keen result columnar Map, keyed by header
   # ---------------------------------------------------------------------------
   def generateResultColumns
     resultColumns = {
@@ -68,6 +69,8 @@ class Keen::CSV
 
   # ---------------------------------------------------------------------------
   # columnIsFiltered?
+  # Takes a column header, and determines whether that column should be
+  # filtered out
   # ---------------------------------------------------------------------------
   def columnIsFiltered?(header)
     return @options[:filteredColumns] &&
@@ -77,6 +80,7 @@ class Keen::CSV
 
   # ---------------------------------------------------------------------------
   # csvString
+  # Generates and returns a CSV for this Keen response
   # ---------------------------------------------------------------------------
   def csvString
     resultColumns = self.generateResultColumns
@@ -92,6 +96,10 @@ class Keen::CSV
     return csvString
   end
 
+  # ---------------------------------------------------------------------------
+  # filterValue
+  # Takes a scalar value, and returns a CSV-compatible one
+  # ---------------------------------------------------------------------------
   def filterValue(value)
     if value == nil
       return ''
@@ -102,6 +110,7 @@ class Keen::CSV
 
   # ---------------------------------------------------------------------------
   # flatten
+  # Converts any nested dictionaries into a flattened/delimited one.
   # ---------------------------------------------------------------------------
   def flatten(object, flattened = {}, prefix = "")
     object.each do |key, value|
